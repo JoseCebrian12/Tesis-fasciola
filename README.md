@@ -17,9 +17,15 @@ Se propone un método alternativo para la detección de la fasciola hepática me
 
 ## Bibliografía
 [1] Organización Panamericana de la Salud. Organización Mundial de la Salud. Home/Topics/ Fascioliasis. https://www.paho.org/en/topics/ fascioliasis
+
 [2] Organización Mundial de la Salud. Organización Panamericana de la Salud. Acción contra las lombrices. Diciembre 2007; Número 10. https://www.who.int/neglected_diseases/ preventive_chemotherapy/Newsletter10_spa.pdf
+
 [3] Organización Mundial de la Salud. Infecciones por trematodos transmitidos por los alimentos. Fascioliasis. https://www.who.int/foodborne_ trematode_infections/fascioliasis/en/
+
 [4] NTS. N° 148 – MINSA/DGIESP. V 01, R. 266-2019/MINSA. (2019). NORMA TÉCNICA DE SALUD PARA LA VIGILANCIA, PREVENCIÓN Y CONTROL DE LA Fasciolosis Humana en el Perú". http://bvs.minsa.gob.pe/local/MINSA/4022.pdf
+
 [5] Benjamin-Chung, J., Pilotte, N., Ercumen, A., Grant, J. R., Maasch, J. R. M. A., Gonzalez, A. M., Abrams, B. P., Ester, A. C., Arnold, B. F., Rahman, M., Haque, R., Hubbard, A. E., Luby, S. P., Williams, S. A., & Colford, J. M. (n.d.). Comparison of multi-parallel qPCR and Kato-Katz for detection of soil-transmitted helminth infection among children in rural Bangladesh Short title: Comparing qPCR and Kato-Katz for soil-transmitted helminth infection detection. https://doi.org/10.1101/629501
+
 [6] Zárate-Rendón, D. A., Vlaminck, J., Levecke, B., Briones-Montero, A., & Geldhof, P. (2019). Comparison of Kato-Katz Thick Smear, Mini-FLOTAC, and flukefinder for the detection and quantification of fasciola hepatica eggs in artificially spiked human stool. American Journal of Tropical Medicine and Hygiene, 101(1), 59–61. https://doi.org/10.4269/ajtmh.18-0988
+
 [7] Dra María Adela Valero Aleixandre, D., María Dolores Bargues Castelló, D., & Santiago Mas Coma, D. (2017). TESIS DOCTORAL DOCTORADO EN PARASITOLOGÍA HUMANA Y ANIMAL DEPARTAMENT DE FARMÀCIA I TECNOLOGIA FARMACÈUTICA I PARASITOLOGIA FACULTAT DE FARMÀCIA, UNIVERSITAT DE VALÈNCIA, VALENCIA, ESPAÑA CARACTERIZACIÓN FENÉTICA Y GENÉTICA DE INDIVIDUOS DEL GÉNERO FASCIOLA LINNAEUS, 1758 (TREMATODA: FASCIOLIDAE) DE MÉXICO LETICIA CALDERÓN ROMERO FACULTAT DE FARMÀCIA.
