@@ -1,18 +1,18 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
-import av
 import cv2
 import numpy as np
 
-st.title("Detección de objetos")
-st.write("Testeo")
+vid = cv2.VideoCapture( 'http://192.168.148.63:81/stream' )
 
-
-def callback(frame):
-    img = frame.to_ndarray(format="bgr24")
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    img_gray = cv2.medianBlur(img_gray, 5)
+st.title( 'ESP32 CAM' )
+frame_window = st.image( [] )
+take_picture_button = st.button( 'Take Picture' )
+img_counter = 0
+while True:
+    got_frame , frame = vid.read()
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    frame_gray = cv2.cvtColor( frame , cv2.COLOR_BGR2GRAY )
+    img_gray = cv2.medianBlur(frame_gray, 5)
 
     thresh_img = cv2.adaptiveThreshold(img_gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
@@ -35,9 +35,17 @@ def callback(frame):
     mask = np.zeros_like(img_gray)
 
     cv2.drawContours(mask, [contours[largest_contour_idx]], 0, (255, 255, 255), -1)
-    masked_img = cv2.bitwise_and(img, img, mask=mask)
-    
-    return av.VideoFrame.from_ndarray(masked_img, format="bgr24")
+    masked_img = cv2.bitwise_and(frame, frame, mask=mask)
+    if got_frame:
+        frame_window.image(masked_img)
 
+    if take_picture_button:
+        img_name = "images/opencv_frame_{}.png".format(img_counter)
+        img_counter += 1
 
-webrtc_streamer(key="example", video_frame_callback=callback)
+        # save the image
+        cv2.imwrite(img_name, frame)
+        print(f"{img_name} saved")
+        break
+
+vid.release()
