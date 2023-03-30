@@ -4,8 +4,8 @@ import av
 import cv2
 import numpy as np
 
-st.title("My first Streamlit app")
-st.write("Hello, world")
+st.title("Detección de objetos")
+st.write("Testeo")
 
 
 def callback(frame):
