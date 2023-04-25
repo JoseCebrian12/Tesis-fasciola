@@ -2,11 +2,33 @@ import streamlit as st
 import cv2
 import numpy as np
 
-vid = cv2.VideoCapture( 'http://192.168.148.63:81/stream' )
+vid = cv2.VideoCapture( 'http://192.168.248.63:81/stream' )
+st.markdown("""
+    <style>
+    .reportview-container {
+        background: white;
+    }
+    
+    .image-corner {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-st.title( 'ESP32 CAM' )
-frame_window = st.image( [] )
-take_picture_button = st.button( 'Take Picture' )
+st.title('Proyecto Detección Fasciola Hepática - Versión 1.0')
+frame_window = st.image([])
+
+# Agregar imagen en la esquina superior derecha
+st.image('/home/popin/Documentos/Tesis_code/images/Logo_Oficial.png', 
+         use_column_width=False, 
+         width=100,  
+         output_format='PNG')
+
+take_picture_button = st.button('Take Picture')
 img_counter = 0
 while True:
     got_frame , frame = vid.read()

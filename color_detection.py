@@ -2,7 +2,7 @@ import cv2
 import urllib.request
 import numpy as np
 
-url = 'http://192.168.156.63:81/stream'
+url = 'http://192.168.248.63:81/stream'
 
 # Definir límites para los colores que queremos detectar
 color_limits = {
