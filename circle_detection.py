@@ -3,7 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Lee la imagen
+<<<<<<< HEAD
+img = cv2.imread("/home/josecebrian12/fasciola_project/images/opencv_frame_3.png")
+=======
 img = cv2.imread("prueba.jpeg")
+>>>>>>> 606dbd40a20252e8b58c97611ffc8988e43d7062
 output = img.copy()
 
 # Convierte la imagen a escala de grises
@@ -19,9 +23,16 @@ circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1.2, minDist=60, param1=
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
 # Define el rango del color amarillo en el espacio de color HSV
+<<<<<<< HEAD
+#bajo_amarillo = np.array([20, 100, 100])
+#alto_amarillo = np.array([30, 255, 255])
+bajo_amarillo = np.array([0, 0, 0])
+alto_amarillo = np.array([255, 255, 255])
+=======
 bajo_amarillo = np.array([20, 100, 100])
 alto_amarillo = np.array([30, 255, 255])
 
+>>>>>>> 606dbd40a20252e8b58c97611ffc8988e43d7062
 # Inicia una máscara vacía para los círculos cuyo centroide está en el rango de amarillos
 mascara_final = np.zeros_like(gray)
 

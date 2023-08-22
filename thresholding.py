@@ -2,22 +2,24 @@ import cv2
 import urllib.request
 import matplotlib.pyplot as plt
 import numpy as np
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import time
 
-# define the URL and open the stream
-url = 'http://192.168.148.63:81/stream'
-cap = cv2.VideoCapture(url)
-
+# initialize the camera and grab a reference to the raw camera capture
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
+# allow the camera to warmup
+time.sleep(0.1)
 # initialize variables
 img_counter = 0
-
-# start reading frames from the stream
-while True:
-    ret, frame = cap.read()
-
-    # display the frame
-    cv2.imshow('frame', frame)
-
-    # wait for user input
+# capture frames from the camera
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+    image = frame.array
+    cv2.imshow("Frame", image)
+    #wait for user input
     key = cv2.waitKey(1) & 0xFF
 
     # if user presses spacebar, capture the frame
@@ -27,41 +29,66 @@ while True:
         img_counter += 1
 
         # save the image
-        cv2.imwrite(img_name, frame)
+        cv2.imwrite(img_name, image)
         print(f"{img_name} saved")
 
         # read the image in grayscale
         img = cv2.imread(img_name)
-        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        output = img.copy()
+        # Convierte la imagen a escala de grises
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # apply median filter to reduce noise
-        img_gray = cv2.medianBlur(img_gray, 5)
+        # Aplica un suavizado Gaussiano para reducir el ruido y mejorar la detección de los círculos
+        gray = cv2.GaussianBlur(gray,(5,5),0)
 
-        # apply adaptive thresholding to binarize the image
-        thresh_img = cv2.adaptiveThreshold(img_gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+        # Realiza la transformada de Hough para círculos
+        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1.2, minDist=60, param1=50, param2=30, minRadius=30, maxRadius=60)
 
-        # apply morphological closing to refine edges
-        kernel = np.ones((5, 5), np.uint8)
-        thresh_img = cv2.morphologyEx(thresh_img, cv2.MORPH_CLOSE, kernel)
+        # Convierte la imagen de BGR a HSV
+        img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-        # find the contours in the image
-        contours, _ = cv2.findContours(thresh_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # Define el rango del color amarillo en el espacio de color HSV
+        bajo_amarillo = np.array([0, 0, 0])
+        alto_amarillo = np.array([255, 255, 255])
 
-        # select the contours within a specific size range
-        min_area = 500
-        max_area = 5000
-        valid_contours = []
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if area > min_area and area < max_area:
-                valid_contours.append(contour)
-        largest_contour_idx = max(range(len(contours)), key=lambda i: cv2.contourArea(contours[i]))
-        mask = np.zeros_like(img_gray)
+        # Inicia una máscara vacía para los círculos cuyo centroide está en el rango de amarillos
+        mascara_final = np.zeros_like(gray)
 
-        cv2.drawContours(mask, [contours[largest_contour_idx]], 0, (255, 255, 255), -1)
-        masked_img = cv2.bitwise_and(img, img, mask=mask)
+        # Verifica si se encontraron algunos círculos
+        if circles is not None:
+            circles = np.round(circles[0, :]).astype("int")
+            for (x, y, r) in circles:
+                # Crea una máscara para el círculo
+                mascara_circulo = np.zeros_like(gray)
+                cv2.circle(mascara_circulo, (x, y), r, 255, -1)
 
-        plt.imshow(masked_img[...,::-1])
+                # Obtén el color HSV del centroide del círculo
+                h, s, v = img_hsv[y, x]
+
+                # Verifica si el color del centroide está en el rango de amarillos
+                if bajo_amarillo[0] <= h <= alto_amarillo[0] and bajo_amarillo[1] <= s <= alto_amarillo[1] and bajo_amarillo[2] <= v <= alto_amarillo[2]:
+                    # Si el color del centroide está en el rango de amarillos, agrega el círculo a la máscara final
+                    mascara_final = cv2.bitwise_or(mascara_final, mascara_circulo)
+                    
+                    # Obtén el color BGR del centroide del círculo
+                    b, g, r = img[y, x]
+                    
+                    # Convierte el color a hexadecimal
+                    color_hex = '#%02x%02x%02x' % (r, g, b)
+                    
+                    # Dibuja el color en el centroide del círculo
+                    cv2.putText(output, color_hex, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+
+        # Aplica la máscara final a la imagen original
+        img_final = cv2.bitwise_and(output, output, mask=mascara_final)
+
+        # Muestra la imagen final
+        plt.subplots(1,2,figsize=(20,10),sharey=True)
+        plt.subplot(1,2,1)
+        plt.imshow(img[:, :, [2, 1, 0]])
+        plt.subplot(1,2,2)
+        plt.imshow(cv2.cvtColor(img_final, cv2.COLOR_BGR2RGB))
+        plt.tight_layout()
         plt.show()
 
         
@@ -69,8 +96,5 @@ while True:
     elif key == ord('q'):
         break
 
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
-
-cap.release()
+    rawCapture.truncate(0)
 cv2.destroyAllWindows()
