@@ -30,18 +30,16 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         # save the image
         cv2.imwrite(img_name, image)
-        print(f"{img_name} saved")
+        
 
         # read the image in grayscale
         img = cv2.imread(img_name)
         output = img.copy()
         # Convierte la imagen a escala de grises
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        # Aplica un suavizado Gaussiano para reducir el ruido y mejorar la detección de los círculos
         gray = cv2.GaussianBlur(gray,(5,5),0)
 
-        # Realiza la transformada de Hough para círculos
+        # Realiza la transformada de Hough para 
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1.2, minDist=60, param1=50, param2=30, minRadius=30, maxRadius=60)
 
         # Convierte la imagen de BGR a HSV
@@ -51,35 +49,35 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         bajo_amarillo = np.array([0, 0, 0])
         alto_amarillo = np.array([255, 255, 255])
 
-        # Inicia una máscara vacía para los círculos cuyo centroide está en el rango de amarillos
+        # Inicia una   para los  cuyo centroide  en el rango de amarillos
         mascara_final = np.zeros_like(gray)
 
-        # Verifica si se encontraron algunos círculos
+        # Verifica si se encontraron algunos 
         if circles is not None:
             circles = np.round(circles[0, :]).astype("int")
             for (x, y, r) in circles:
-                # Crea una máscara para el círculo
+                # Crea una  para el 
                 mascara_circulo = np.zeros_like(gray)
                 cv2.circle(mascara_circulo, (x, y), r, 255, -1)
 
-                # Obtén el color HSV del centroide del círculo
+                #  el color HSV del centroide del 
                 h, s, v = img_hsv[y, x]
 
-                # Verifica si el color del centroide está en el rango de amarillos
+                # Verifica si el color del centroide  en el rango de amarillos
                 if bajo_amarillo[0] <= h <= alto_amarillo[0] and bajo_amarillo[1] <= s <= alto_amarillo[1] and bajo_amarillo[2] <= v <= alto_amarillo[2]:
-                    # Si el color del centroide está en el rango de amarillos, agrega el círculo a la máscara final
+                    # Si el color del centroide  en el rango de amarillos, agrega el  a la  final
                     mascara_final = cv2.bitwise_or(mascara_final, mascara_circulo)
                     
-                    # Obtén el color BGR del centroide del círculo
+                    #  el color BGR del centroide del 
                     b, g, r = img[y, x]
                     
                     # Convierte el color a hexadecimal
                     color_hex = '#%02x%02x%02x' % (r, g, b)
                     
-                    # Dibuja el color en el centroide del círculo
+                    # Dibuja el color en el centroide del 
                     cv2.putText(output, color_hex, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
-        # Aplica la máscara final a la imagen original
+        # Aplica la  final a la imagen original
         img_final = cv2.bitwise_and(output, output, mask=mascara_final)
 
         # Muestra la imagen final
