@@ -2,6 +2,8 @@ import cv2
 import urllib.request
 import numpy as np
 
+url = 'http://192.168.0.24:81/stream'
+
 # Definir límites para los colores que queremos detectar
 color_limits = {
     'rojo': ([0, 70, 50], [10, 255, 255]), # límites inferiores y superiores para rojo en HSV
@@ -24,7 +26,7 @@ def detect_color(frame, roi):
     return color_detected
 
 # Capturar video desde la cámara
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(url)
 
 while True:
     ret, frame = cap.read()
@@ -52,4 +54,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-

@@ -1,10 +1,9 @@
-import cv2
-import urllib.request
-import matplotlib.pyplot as plt
 import numpy as np
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+import cv2
+import matplotlib.pyplot as plt
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
